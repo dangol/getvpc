@@ -1,0 +1,24 @@
+---
+- hosts: localhost
+
+  tasks:
+  - name: Get VPCs
+    register: VPCs
+    ec2_vpc_net_facts:
+      region: us-east-1
+      filters:
+        "tag:Name": win-cf
+
+  - name: Write VPC file
+    copy:
+      content: "{{ VPCs.vpcs }}"
+      dest: "{{ outdir }}/vpcfacts"
+      #    local_action: shell echo "{{ item }}"  >> vpc-file
+      #    with_items: "{{ VPCs.vpcs }}"
+
+  - name: estalish VPC ID as fact
+    set_fact:
+     vpcid: "{{ VPCs.vpcs | map(attribute='id') | list }}"
+
+  - debug:
+      msg: "The Value of VPCID is {{ vpcid }}"

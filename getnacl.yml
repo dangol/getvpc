@@ -1,0 +1,20 @@
+---
+- hosts: localhost
+
+  tasks:
+  - name: Get VPCs
+    register: VPCs
+    ec2_vpc_net_facts:
+      region: us-east-1
+      filters:
+        "tag:Name": win-cf
+  - name: Get All NACLs
+    register: all_nacls
+    ec2_vpc_nacl_facts:
+      region: us-east-1
+  - name: Write nacls to file
+    local_action: shell echo "{{ item }}" >> nacl-file
+    with_items: "{{ all_nacls.nacls }}"
+  - name: Write VPC file
+    local_action: shell echo "{{ item }}"  >> vpc-file
+    with_items: "{{ VPCs.vpcs }}"
