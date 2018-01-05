@@ -35,8 +35,20 @@
       content: "{{ subnets.subnets }}"
       dest: "{{ outdir }}/subnetfacts"
 
+  - name: Get Security Groups
+    register: sgs
+    ec2_group_facts:
+      region: "{{  EC2_REGION }}"
+      filters:
+        vpc-id: "{{ vpcid }}"
+
+  - name: Write security Groups file
+    copy: 
+      content: "{{ sgs }}"
+      dest: "{{ outdir }}/sgfacts"
+
   - name: Get All NACLs
-    register: all_nacls
+    register: nacls
     ec2_vpc_nacl_facts:
       region: "{{  EC2_REGION }}"
       filters:
@@ -44,5 +56,5 @@
 
   - name: Write nacls file
     copy:
-      content: "{{ all_nacls.nacls }}"
+      content: "{{ nacls.nacls }}"
       dest: "{{ outdir }}/naclfacts"
