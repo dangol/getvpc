@@ -34,3 +34,15 @@
     copy:
       content: "{{ subnets.subnets }}"
       dest: "{{ outdir }}/subnetfacts"
+
+  - name: Get All NACLs
+    register: all_nacls
+    ec2_vpc_nacl_facts:
+      region: "{{  EC2_REGION }}"
+      filters:
+        vpc-id: "{{ vpcid }}"
+
+  - name: Write nacls file
+    copy:
+      content: "{{ all_nacls.nacls }}"
+      dest: "{{ outdir }}/naclfacts"
