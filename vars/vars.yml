@@ -1,3 +1,4 @@
 ---
 EC2_REGION: us-east-1
 outdir: ~/github/collectvpc
+VPC_TAG: win-cf

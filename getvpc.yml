@@ -7,12 +7,12 @@
     ec2_vpc_net_facts:
       region: "{{ EC2_REGION }}"
       filters:
-        "tag:Name": win-cf
+        "tag:Name": "{{VPC_TAG}}"
 
   - name: Write VPC file
     copy:
       content: "{{ VPCs.vpcs }}"
-      dest: "{{ outdir }}/vpcfacts"
+      dest: "{{ outdir }}/{{VPC_TAG}}_facts"
       #    local_action: shell echo "{{ item }}"  >> vpc-file
       #    with_items: "{{ VPCs.vpcs }}"
 
@@ -33,7 +33,7 @@
   - name: Write subnet file
     copy:
       content: "{{ subnets.subnets }}"
-      dest: "{{ outdir }}/subnetfacts"
+      dest: "{{ outdir }}/{{VPC_TAG}}_subnetfacts"
 
   - name: Get Security Groups
     register: sgs
@@ -45,7 +45,7 @@
   - name: Write security Groups file
     copy: 
       content: "{{ sgs }}"
-      dest: "{{ outdir }}/sgfacts"
+      dest: "{{ outdir }}/{{VPC_TAG}}_sgfacts"
 
   - name: Get All NACLs
     register: nacls
@@ -57,4 +57,4 @@
   - name: Write nacls file
     copy:
       content: "{{ nacls.nacls }}"
-      dest: "{{ outdir }}/naclfacts"
+      dest: "{{ outdir }}/{{VPC_TAG}}_naclfacts"
