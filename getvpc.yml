@@ -2,23 +2,21 @@
 - hosts: localhost
 
   tasks:
-  - name: Get VPCs
-    register: VPCs
+  - name: Get Primary VPC
+    register: 1st_VPCs
     ec2_vpc_net_facts:
-      region: "{{ EC2_REGION }}"
+      region: "{{ 1st_EC2_REGION }}"
       filters:
-        "tag:Name": "{{VPC_TAG}}"
+        "tag:Name": "{{1st_VPC_TAG}}"
 
   - name: Write VPC file
     copy:
-      content: "{{ VPCs.vpcs }}"
-      dest: "{{ outdir }}/{{VPC_TAG}}_facts"
-      #    local_action: shell echo "{{ item }}"  >> vpc-file
-      #    with_items: "{{ VPCs.vpcs }}"
-
+      content: "{{ 1st_VPCs.vpcs }}"
+      dest: "{{ outdir }}/{{1st_VPC_TAG}}_facts"
+      
   - name: estalish VPC ID as fact
     set_fact:
-     vpcid: "{{ VPCs.vpcs | map(attribute='id') | list }}"
+     vpcid: "{{ 1st_VPCs.vpcs | map(attribute='id') | list }}"
 
   - debug:
       msg: "The Value of VPCID is {{ vpcid }}"
@@ -26,35 +24,90 @@
   - name: Get Subnets
     register: subnets
     ec2_vpc_subnet_facts:
-      region: "{{  EC2_REGION }}"
+      region: "{{  1st_EC2_REGION }}"
       filters:
         vpc-id: "{{ vpcid }}"
 
   - name: Write subnet file
     copy:
       content: "{{ subnets.subnets }}"
-      dest: "{{ outdir }}/{{VPC_TAG}}_subnetfacts"
+      dest: "{{ outdir }}/{{1st_VPC_TAG}}_subnetfacts"
 
   - name: Get Security Groups
     register: sgs
     ec2_group_facts:
-      region: "{{  EC2_REGION }}"
+      region: "{{  1st_EC2_REGION }}"
       filters:
         vpc-id: "{{ vpcid }}"
 
   - name: Write security Groups file
     copy: 
       content: "{{ sgs }}"
-      dest: "{{ outdir }}/{{VPC_TAG}}_sgfacts"
+      dest: "{{ outdir }}/{{1st_VPC_TAG}}_sgfacts"
 
   - name: Get All NACLs
     register: nacls
     ec2_vpc_nacl_facts:
-      region: "{{  EC2_REGION }}"
+      region: "{{  1st_EC2_REGION }}"
       filters:
         vpc-id: "{{ vpcid }}"
 
   - name: Write nacls file
     copy:
       content: "{{ nacls.nacls }}"
-      dest: "{{ outdir }}/{{VPC_TAG}}_naclfacts"
+      dest: "{{ outdir }}/{{1st_VPC_TAG}}_naclfacts"
+
+  - name: Get Target VPC
+    register: 2nd_VPCs
+    ec2_vpc_net_facts:
+      region: "{{ 2nd_EC2_REGION }}"
+      filters:
+        "tag:Name": "{{2nd_VPC_TAG}}"
+
+  - name: Write VPC file
+    copy:
+      content: "{{ 2nd_VPCs.vpcs }}"
+      dest: "{{ outdir }}/{{2nd_VPC_TAG}}_facts"
+      
+  - name: estalish VPC ID as fact
+    set_fact:
+     vpcid: "{{ 2nd_VPCs.vpcs | map(attribute='id') | list }}"
+
+  - debug:
+      msg: "The Value of VPCID is {{ vpcid }}"
+
+  - name: Get Subnets
+    register: subnets
+    ec2_vpc_subnet_facts:
+      region: "{{  2nd_EC2_REGION }}"
+      filters:
+        vpc-id: "{{ vpcid }}"
+
+  - name: Write subnet file
+    copy:
+      content: "{{ subnets.subnets }}"
+      dest: "{{ outdir }}/{{2nd_VPC_TAG}}_subnetfacts"
+
+  - name: Get Security Groups
+    register: sgs
+    ec2_group_facts:
+      region: "{{  2nd_EC2_REGION }}"
+      filters:
+        vpc-id: "{{ vpcid }}"
+
+  - name: Write security Groups file
+    copy: 
+      content: "{{ sgs }}"
+      dest: "{{ outdir }}/{{2nd_VPC_TAG}}_sgfacts"
+
+  - name: Get All NACLs
+    register: nacls
+    ec2_vpc_nacl_facts:
+      region: "{{  2nd_EC2_REGION }}"
+      filters:
+        vpc-id: "{{ vpcid }}"
+
+  - name: Write nacls file
+    copy:
+      content: "{{ nacls.nacls }}"
+      dest: "{{ outdir }}/{{2nd_VPC_TAG}}_naclfacts"
