@@ -1,3 +1,5 @@
+# how to run:
+# ansible-playbook findtags.yml -e ec2roles=facetedsearch -e env=test -e EC2_REGION=us-west-2 -i /etc/ansible/ec2.py
 ---
 - name: EC2 Tag Searching
   hosts: localhost
