@@ -1,4 +1,6 @@
 ---
-EC2_REGION: us-east-1
+1st_EC2_REGION: us-east-1
+2nd_EC2_REGION: us-west-2
 outdir: ~/github/collectvpc
-VPC_TAG: win-cf
+1st_VPC_TAG: win-cf
+2st_VPC_TAG: production-shadow-vpc
