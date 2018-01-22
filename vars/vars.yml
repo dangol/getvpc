@@ -1,6 +1,6 @@
 ---
 pri_EC2_REGION: us-east-1
 sec_EC2_REGION: us-west-2
-outdir: ~/github/collectvpc
+outdir: ~/github/getvpc
 pri_VPC_TAG: win-cf
 sec_VPC_TAG: production-shadow-vpc
