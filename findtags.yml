@@ -1,0 +1,21 @@
+---
+- name: EC2 Tag Searching
+  hosts: localhost
+  gather_facts: false
+  tasks:
+  - name: Gather hosts matching tags. This is important.
+    ec2_instance_facts:
+      region: "{{ EC2_REGION }}"
+      filters:
+        "tag:Roles": "{{ ec2roles }}"
+        "tag:ENV": "{{ env }}"
+    register: tagged_instances
+
+#  - Name: Just the facts
+#    set_fact:
+#     iids: "{{ tagged_instances.instance_id | map(attribute='id') | list }}"
+
+  - debug:
+      msg: "this one {{ item }}"
+    with_items:
+        - "{{ tagged_instances.instances | map(attribute='instance_id') | list }}"
