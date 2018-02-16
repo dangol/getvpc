@@ -1,0 +1,6 @@
+- dynamodb_table:
+    name: "{{ item.name }}"
+    region: "{{ EC2_REGION }}"
+    hash_key_name: "{{ item.idx }}"
+    hash_key_type: STRING
+  with_items: "{{ dynamos }}"

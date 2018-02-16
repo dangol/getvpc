@@ -1,0 +1,6 @@
+- dynamodb_table:
+    name: "{{ item.name }}"
+    region: "{{ EC2_REGION }}"
+    indexes:
+      - name: item.idx
+  with_items: "{{ dynamos }}"
